@@ -12,6 +12,7 @@ class SarsaAgent(object):
     """
     Agent是交互的主体
     """
+
     def __init__(self, obs_n, act_n, learning_rate=0.01, gamma=0.9, e_greed=0.1):
         self.act_n = act_n  # 动作维度，也就是有几个动作可选
         self.lr = learning_rate  # 学习率
@@ -19,15 +20,15 @@ class SarsaAgent(object):
         self.epsilon = e_greed  # 按一定概率随机选动作
         self.Q = np.zeros((obs_n, act_n))
 
- # 根据输入观察值，采样输出的动作值，带探索
+    # 根据输入观察值，采样输出的动作值，带探索
     def sample(self, obs):
         """
         在predict方法基础上使用e-greedy增加搜索
         """
-        if np.random.uniform(0, 1) < (1.0 - self.epsilon):  #根据table的Q值选动作
+        if np.random.uniform(0, 1) < (1.0 - self.epsilon):  # 根据table的Q值选动作
             action = self.predict(obs)
         else:
-            action = np.random.choice(self.act_n)   #有一定概率随机探索选取一个动作
+            action = np.random.choice(self.act_n)  # 有一定概率随机探索选取一个动作
         return action
 
     def predict(self, obs):
@@ -65,7 +66,7 @@ class SarsaAgent(object):
         print(npy_file + ' saved.')
 
     def restore(self, npy_file='./q_table.npy'):
-         # 从文件中读取Q值到Q表格中
+        # 从文件中读取Q值到Q表格中
         self.Q = np.load(npy_file)
         print(npy_file + ' load.')
 
@@ -80,7 +81,7 @@ def run_episode(env, agent, render=False):
 
     while True:
         next_obs, reward, done, _ = env.step(action)  # 与环境进行一个交互
-        next_action = agent.sample(next_obs)   # 根据算法选择一个动作
+        next_action = agent.sample(next_obs)  # 根据算法选择一个动作
 
         # train Sarsa algorithm
         agent.learn(obs, action, reward, next_obs, next_action, done)
@@ -88,7 +89,7 @@ def run_episode(env, agent, render=False):
         action = next_action
         obs = next_obs  # 存储上一个观察值
         total_reward += reward
-        total_steps +=1
+        total_steps += 1
         if render:
             env.render()
         if done:
@@ -117,12 +118,11 @@ env = gym.make("CliffWalking-v0")  # 0 up, 1 right, 2 down, 3 left
 
 # 创建一个agent实例，输入超参数
 agent = SarsaAgent(
-        obs_n=env.observation_space.n,
-        act_n=env.action_space.n,
-        learning_rate=0.1,
-        gamma=0.9,
-        e_greed=0.1)
-
+    obs_n=env.observation_space.n,
+    act_n=env.action_space.n,
+    learning_rate=0.1,
+    gamma=0.9,
+    e_greed=0.1)
 
 # 训练500个episode，打印每个episode的分数
 for episode in range(500):
